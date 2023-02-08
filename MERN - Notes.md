@@ -180,7 +180,106 @@ npm run server
    app.use("/api/posts", require("./routes/api/posts"));
    ```
 
-9. TODO:
+9. Create Models:
+
+   - Create model directory and files:
+
+   ```
+   mkdir -p models && touch $_/<Model>.js
+   ```
+
+   - Import `mongoose` and create a `<Model>Schema` variable for each model file:
+     (Note: The Schema is similar to the migrations files in rails)
+
+   ```js
+   //Users.js (EXAMPLE)
+   const mongoose = require("mongoose");
+
+   const UserSchema = new mongoose.Schema({
+     name: {
+       type: String,
+       required: true,
+     },
+     email: {
+       type: String,
+       require: true,
+       unique: true,
+     },
+     password: {
+       type: String,
+       required: true,
+     },
+     avatar: {
+       type: String,
+     },
+     date: {
+       type: Date,
+       default: Date.now,
+     },
+   });
+
+   // module.exports = <Model> = mongoose.model("<model>", <ModelSchema>);
+   module.exports = User = mongoose.model("user", UserSchema);
+   ```
+
+10. Add Request and Body Validation to User Route:
+
+    - This validation process can/will be applied to other routes/models as well.
+
+    - Add the following line to `server.js` to allow us to get Request Body Data using `req.body` in the routes files:
+
+    ```js
+    <!-- server.js -->
+    // Init Middleware (formerly bodyParser)
+    app.use(express.json({ extended: false }));
+    ```
+
+    - Added `console.log(req.body)`, which will log the full request body on each post request:
+
+    ```js
+    <!-- routes/api/users.js -->
+    // @route   POST api/users
+    // @desc    Register user
+    // @access  Public
+    router.post("/", (req, res) => {
+      // Need to init middleware in the server.js file to get data in req.body
+      console.log(req.body);
+
+      res.send("User route");
+    });
+    ```
+
+    - Add `express-validator` parameter checks (You can remove the `console.log(req.body)` that was added in the previous bullet point):
+
+      Format: [js](`check("<field>", "<Error Msg>").checkMethod())`
+
+    ```js
+    // @route   POST api/users
+    // @desc    Register user
+    // @access  Public
+    router.post(
+      "/",
+      [
+        check("name", "Name is required").not().isEmpty(),
+        check("email", "Please include a valid email").isEmail(),
+        check(
+          "password",
+          "Please enter a password with 6 or more characters"
+        ).isLength({ min: 6 }),
+      ],
+      (req, res) => {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+          // return status 400: Bad Request
+          return res.status(400).json({ errors: errors.array() });
+        }
+
+        res.send("User route");
+      }
+    );
+    ```
+
+11. TODO:
 
 #
 
