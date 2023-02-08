@@ -91,7 +91,63 @@ To run these scripts run (Note: This command replaces `node server` from step 4)
 npm run server
 ```
 
-6.
+6. Create `config` folder and `default.json` file:
+
+   - This uses the `config` npm dependency to create global application variables
+
+   ```cmd
+   mkdir -p config && touch $_/default.json
+   ```
+
+   - Add your `"mongoURI"` variable that you pull from your database on Mongo Atlas.
+
+7. Create `config/db.js` file:
+
+   ```
+   touch config/db.js
+   ```
+
+   Add basic database configuration code to `config/db.js` file:
+
+   ```javascript
+   const mongoose = require("mongoose");
+   const config = require("config");
+   const db = config.get("mongoURI");
+
+   // mongoose.connect(db)
+   const connectDB = async () => {
+     try {
+       await mongoose.connect(db);
+
+       console.log("MongoDB Connected...");
+     } catch (err) {
+       console.log(err.message);
+       // Exit process with failure
+       process.exit(1);
+     }
+   };
+
+   module.exports = connectDB;
+   ```
+
+   Add the following lines to your `server.js` file to connect it to your database:
+
+   ```js
+   const connectDB = require("./config/db");
+
+   ...
+
+   // Connect Database
+   connectDB();
+   ```
+
+   Test by running `npm run server` in the terminal to run the server. You should see `MongoDB Connected...` as part of the terminal response.
+
+```
+
+```
+
+8.
 
 #
 
