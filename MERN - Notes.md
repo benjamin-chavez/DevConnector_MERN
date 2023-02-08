@@ -147,7 +147,40 @@ npm run server
 
 ```
 
-8.
+8. Create Routes
+
+   - Create `routes/api/` directory and corresponding route files:
+
+   ```bash
+   mkdir -p routes/api && touch $_/users.js $_/auth.js $_/profile.js $_/posts.js
+   ```
+
+   - Update each new route file with the following boilerplate:
+
+   ```js
+   const express = require("express");
+   const router = express.Router();
+
+   // @route   GET api/<route>
+   // @desc    Test route
+   // @access  Public
+   router.get("/", (req, res) => res.send("<route> route"));
+
+   // Export the router
+   module.exports = router;
+   ```
+
+   - Add these new Routes to `server.js` file:
+
+   ```js
+   // Define Routes
+   app.use("/api/users", require("./routes/api/users"));
+   app.use("/api/aut", require("./routes/api/auth"));
+   app.use("/api/profile", require("./routes/api/profile"));
+   app.use("/api/posts", require("./routes/api/posts"));
+   ```
+
+9. TODO:
 
 #
 
