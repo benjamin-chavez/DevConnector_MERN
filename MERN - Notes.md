@@ -398,7 +398,9 @@ npm run server
     );
     ```
 
-13. Add Authentication Middleware:
+13. Add Custom Authentication Middleware:
+
+    - Note: If you want to add third party auth like Facebook and Twitter, passport might be a good option to replace this auth middleware
 
     - Create the new middleware file at `middleware/auth.js`
 
