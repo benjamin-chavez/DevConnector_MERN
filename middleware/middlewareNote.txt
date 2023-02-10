@@ -1,0 +1,1 @@
+If you want to add third party auth like Facebook and Twitter, passport might be a good option to replace this auth middleware

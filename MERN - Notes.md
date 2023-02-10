@@ -398,7 +398,67 @@ npm run server
     );
     ```
 
-13. TODO:
+13. Add Authentication Middleware:
+
+    - Create the new middleware file at `middleware/auth.js`
+
+    - Add the following Boilerplate Authentication code to the `middleware/auth.js` file:
+      - Middleware Functions have access to the requset and response cycle/objects and next is a callback to continue onto the next piece of middleware
+
+    ```js
+    const jwt = require('jsonwebtoken');
+    const config = require('config');
+
+    // Middleware Function:
+    module.exports = function (req, res, next) {
+      // Get token from header
+      const token = req.header('x-auth-token');
+
+      // Check if no token
+      if (!token) {
+        // Status 401: not authorized
+        return res.status(401).json({ msg: 'No token, authorization denied' });
+      }
+
+      // Verify Token
+      try {
+        const decoded = jwt.verify(token, config.get('jwtSecret'));
+
+        req.user = decoded.user;
+        next();
+      } catch (error) {
+        // If token is not valid:
+        res.status(401).json({ msg: 'Token is not valid' });
+      }
+    };
+    ```
+
+    - Add the new GET route to ``:
+      - `.select('-password')` removes the password field from returned object
+      - Passing in the `auth` paramater to the get function is what makes the route private/need authentication
+
+    ```js
+    const auth = require('../../middleware/auth');
+
+    const User = require('../../models/User');
+
+    // @route   GET api/auth
+    // @desc    Get user by token
+    // @access  Private
+    router.get('/', auth, async (req, res) => {
+      try {
+        //`.select('-password')` removes password from returned object
+        const user = await User.findById(req.user.id).select('-password');
+
+        res.json(user);
+      } catch (err) {
+        console.log(err.message);
+        res.status(500).send('Server Error');
+      }
+    });
+    ```
+
+14. TODO:
 
 #
 
