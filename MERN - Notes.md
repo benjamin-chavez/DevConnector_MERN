@@ -62,11 +62,11 @@ touch server.js
 Add boilerplate server code to `server.js`:
 
 ```javascript
-const express = require("express");
+const express = require('express');
 
 const app = express();
 
-app.get("/", (req, res) => res.send("API Running"));
+app.get('/', (req, res) => res.send('API Running'));
 
 const PORT = process.env.PORT || 5000;
 
@@ -110,16 +110,16 @@ npm run server
    Add basic database configuration code to `config/db.js` file:
 
    ```javascript
-   const mongoose = require("mongoose");
-   const config = require("config");
-   const db = config.get("mongoURI");
+   const mongoose = require('mongoose');
+   const config = require('config');
+   const db = config.get('mongoURI');
 
    // mongoose.connect(db)
    const connectDB = async () => {
      try {
        await mongoose.connect(db);
 
-       console.log("MongoDB Connected...");
+       console.log('MongoDB Connected...');
      } catch (err) {
        console.log(err.message);
        // Exit process with failure
@@ -158,13 +158,13 @@ npm run server
    - Update each new route file with the following boilerplate:
 
    ```js
-   const express = require("express");
+   const express = require('express');
    const router = express.Router();
 
    // @route   GET api/<route>
    // @desc    Test route
    // @access  Public
-   router.get("/", (req, res) => res.send("<route> route"));
+   router.get('/', (req, res) => res.send('<route> route'));
 
    // Export the router
    module.exports = router;
@@ -174,10 +174,10 @@ npm run server
 
    ```js
    // Define Routes
-   app.use("/api/users", require("./routes/api/users"));
-   app.use("/api/aut", require("./routes/api/auth"));
-   app.use("/api/profile", require("./routes/api/profile"));
-   app.use("/api/posts", require("./routes/api/posts"));
+   app.use('/api/users', require('./routes/api/users'));
+   app.use('/api/aut', require('./routes/api/auth'));
+   app.use('/api/profile', require('./routes/api/profile'));
+   app.use('/api/posts', require('./routes/api/posts'));
    ```
 
 9. Create Models:
@@ -193,7 +193,7 @@ npm run server
 
    ```js
    //Users.js (EXAMPLE)
-   const mongoose = require("mongoose");
+   const mongoose = require('mongoose');
 
    const UserSchema = new mongoose.Schema({
      name: {
@@ -219,7 +219,7 @@ npm run server
    });
 
    // module.exports = <Model> = mongoose.model("<model>", <ModelSchema>);
-   module.exports = User = mongoose.model("user", UserSchema);
+   module.exports = User = mongoose.model('user', UserSchema);
    ```
 
 10. Add Request and Body Validation to User Route:
@@ -251,35 +251,154 @@ npm run server
 
     - Add `express-validator` parameter checks (You can remove the `console.log(req.body)` that was added in the previous bullet point):
 
-      Format: [js](`check("<field>", "<Error Msg>").checkMethod())`
+      Format: [js](`check("<field>", '<Error Msg>').checkMethod())`
 
     ```js
     // @route   POST api/users
     // @desc    Register user
     // @access  Public
     router.post(
-      "/",
+      '/',
       [
-        check("name", "Name is required").not().isEmpty(),
-        check("email", "Please include a valid email").isEmail(),
+        check('name', 'Name is required').not().isEmpty(),
+        check('email', 'Please include a valid email').isEmail(),
         check(
-          "password",
-          "Please enter a password with 6 or more characters"
+          'password',
+          'Please enter a password with 6 or more characters'
         ).isLength({ min: 6 }),
       ],
-      (req, res) => {
+      async (req, res) => {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
           // return status 400: Bad Request
           return res.status(400).json({ errors: errors.array() });
         }
 
-        res.send("User route");
+        res.send('User route');
       }
     );
     ```
 
-11. TODO:
+11. Add User Registration functionality:
+
+    - Import the `gravatar` dependency, `bcryptjs` dependency, and `User` model into the User Route file (`routes/api/users.js`):
+
+    ```js
+    const gravatar = require("gravatar");
+    const bcrypt = require("bcryptjs");
+    ...
+    const User = require("../../models/User");
+    ```
+
+    - Add registration logic to User Route file (`routes/api/users.js`):
+
+    ```js
+    async (req, res) => {
+
+      ...
+
+      // Destructure the request body
+      const { name, email, password } = req.body;
+
+      try {
+        // See if user exists
+        let user = await User.findOne({ email });
+
+        if (user) {
+          return res
+            .status(400)
+            .json({ errors: [{ msg: "User already exists" }] });
+        }
+
+        // Get user's gravatar (based on email)
+        const avatar = gravatar.url(email, {
+          s: "200", // default size
+          r: "pg", // rating
+          d: "mm", // default image
+        });
+
+        // Create new user instance (not saved yet)
+        user = new User({
+          name,
+          email,
+          avatar,
+          password,
+        });
+
+        // Generate Bycrypt Hashing Salt for password hashing
+        const salt = await bcrypt.genSalt(10);
+
+        // Encrypt the password using bycrypt
+        user.password = await bcrypt.hash(password, salt);
+
+        // Save user to database
+        await user.save();
+
+        // Return the jsonwebtoken (to auto login users after acct registration)
+        res.send("User registered");
+
+        res.send("User route");
+      } catch (err) {
+        console.log(err.message);
+        res.status(500).send("Server error");
+      }
+    };
+    ```
+
+12. Add JSON Web Token:
+
+    - Add global `jwtSecret` variable to your `config/default.json` file:
+
+    ```json
+    {
+      "mySecretToken": "secretTokenString"
+    }
+    ```
+
+    - Import `jwt` and your new `jwtSecret` global variable into the user route:
+
+    ```js
+    // routes/api/users.js
+    const jwt = require('jsonwebtoken');
+    const config = require('config');
+    ```
+
+    - Add logic to sign the JWT token and send it to the client:
+
+    ```js
+    router.post(
+      ...
+      async (req, res) => {
+        ...
+        try {
+          ...
+          // Return the jsonwebtoken (to auto login users after acct registration)
+          // res.send("User registered");
+          const payload = {
+            user: {
+              // MongoDB uses `._id`, mongoose has an abstraction layer so `.id` works fine
+              id: user.id,
+            },
+          };
+
+          jwt.sign(
+            payload,
+            config.get("jwtSecret"),
+            { expiresIn: 3600 },
+            (err, token) => {
+              if (err) throw err;
+              // You could send the user ID back to the cleint here instead of sending the token
+              res.json({ token });
+            }
+          );
+        } catch (err) {
+          ...
+        }
+      }
+    );
+    ```
+
+13. TODO:
 
 #
 

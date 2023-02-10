@@ -1,11 +1,13 @@
-const express = require("express");
+const express = require('express');
 const router = express.Router();
-const gravatar = require("gravatar");
-const bcrypt = require("bcryptjs");
-const { check, validationResult } = require("express-validator");
+const gravatar = require('gravatar');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+const config = require('config');
+const { check, validationResult } = require('express-validator');
 
 // Bring in the User Model:
-const User = require("../../models/User");
+const User = require('../../models/User');
 
 // @route   GET api/users
 // @desc    Test route
@@ -16,13 +18,13 @@ const User = require("../../models/User");
 // @desc    Register user
 // @access  Public
 router.post(
-  "/",
+  '/',
   [
-    check("name", "Name is required").not().isEmpty(),
-    check("email", "Please include a valid email").isEmail(),
+    check('name', 'Name is required').not().isEmpty(),
+    check('email', 'Please include a valid email').isEmail(),
     check(
-      "password",
-      "Please enter a password with 6 or more characters"
+      'password',
+      'Please enter a password with 6 or more characters'
     ).isLength({ min: 6 }),
   ],
   async (req, res) => {
@@ -45,14 +47,14 @@ router.post(
       if (user) {
         return res
           .status(400)
-          .json({ errors: [{ msg: "User already exists" }] });
+          .json({ errors: [{ msg: 'User already exists' }] });
       }
 
       // Get user's gravatar (based on email)
       const avatar = gravatar.url(email, {
-        s: "200", // default size
-        r: "pg", // rating
-        d: "mm", // default image
+        s: '200', // default size
+        r: 'pg', // rating
+        d: 'mm', // default image
       });
 
       // Create new user instance (not saved yet)
@@ -73,12 +75,28 @@ router.post(
       await user.save();
 
       // Return the jsonwebtoken (to auto login users after acct registration)
-      res.send("User registered");
+      // res.send("User registered");
+      const payload = {
+        user: {
+          // MongoDB uses `._id`, mongoose has an abstraction layer so `.id` works fine
+          id: user.id,
+        },
+      };
 
-      res.send("User route");
+      jwt.sign(
+        payload,
+        config.get('jwtSecret'),
+        // FIXME: Change back to 3600 when deploying
+        { expiresIn: 360000 },
+        (err, token) => {
+          if (err) throw err;
+          // You could send the user ID back to the cleint here instead of sending the token
+          res.json({ token });
+        }
+      );
     } catch (err) {
       console.log(err.message);
-      res.status(500).send("Server error");
+      res.status(500).send('Server error');
     }
   }
 );
