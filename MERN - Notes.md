@@ -550,9 +550,42 @@ npm run server
     ```
 
 15. Continue creating other models...
-16. TODO:
 
-#
+<!-------------------------------------------------------------------------------------->
+<!-------------------------------------- FRONTEND -------------------------------------->
+<!-------------------------------------------------------------------------------------->
+
+1. Create a new React application in a Directory named `Frontend`:
+
+   ```bash
+   npx create-react-app@5.0.1 frontend
+   cd frontend
+   ```
+
+2. Add frontend dependencies:
+   axios react-router-dom redux react-redux redux-thunk redux-devtools-extension moment react-moment
+   ```bash
+   npm i axios react-router-dom redux react-redux redux-thunk redux-devtools-extension moment react-moment
+   ```
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```
 
 ```
 

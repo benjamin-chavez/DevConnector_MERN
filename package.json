@@ -4,8 +4,10 @@
   "description": "Social network for developers",
   "main": "server.js",
   "scripts": {
-    "start": "node server",
-    "server": "nodemon server",
+    "start": "node backend/server",
+    "server": "nodemon backend/server",
+    "client": "npm start --prefix frontend",
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
