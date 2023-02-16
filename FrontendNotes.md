@@ -274,7 +274,61 @@
     };
     ```
 
-9.  TODO:
+9.  Add Redux to React Frontend
+
+    - Redux gives app level state.
+    <!-- - Component Calls Action -> Reducer receives action, updates state and passes state back down. -->
+
+    - Add Redux Store:
+
+      ```jsx
+      // frontend/src/setupTests.js
+
+      // TODO: Replace createStore with configureStore: https://redux.js.org/tutorials/fundamentals/part-8-modern-redux
+      import { createStore, applyMiddleware } from 'redux';
+      import { composeWithDevTools } from 'redux-devtools-extension';
+      import thunk from 'redux-thunk';
+      import rootReducer from './reducers';
+
+      const initialState = {};
+
+      const middleware = [thunk];
+
+      const store = createStore(
+        rootReducer,
+        initialState,
+        composeWithDevTools(applyMiddleware(...middleware))
+      );
+
+      export default store;
+      ```
+
+    - Add `Provider` to `frontend/src/App.js` file and pass it the newly created `store`:
+
+      - The `Provider` is what actually connects Redux to our React application
+
+      ```jsx
+      // frontend/src/App.js
+
+      ...
+      // Redux
+      import { Provider } from 'react-redux';
+      import store from './store';
+
+      ...
+
+      const App = () => (
+        <Provider store={store}>
+          <Router>
+            ...
+          </Router>
+        </Provider>
+      );
+
+      export default App;
+      ```
+
+10. TODO:
 
 ```
 

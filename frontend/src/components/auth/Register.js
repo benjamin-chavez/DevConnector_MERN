@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -19,7 +20,7 @@ const Register = () => {
       // TODO: Replace console log with an alert
       console.log('PASSWORDS DO NOT MATCH');
     } else {
-      console.log(FormData);
+      console.log('SUCCESS');
       // register({ name, email, password });
       // console.log(name, email, password);
     }
@@ -81,7 +82,7 @@ const Register = () => {
         <input type="submit" className="btn btn-primary" value="Register" />
       </form>
       <p className="my-1">
-        Already have an account? <a href="login.html">Sign In</a>
+        Already have an account? <Link to="/login">Sign In</Link>
       </p>
     </section>
   );
