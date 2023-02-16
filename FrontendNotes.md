@@ -23,9 +23,10 @@
    - redux-devtools-extension -
    - moment - A date and Time library for data/time formatting
    - react-moment - react specific library so that we can use moment within a react component
+   - uuid -
 
    ```bash
-   npm i axios react-router-dom redux react-redux redux-thunk redux-devtools-extension moment react-moment
+   npm i axios react-router-dom redux react-redux redux-thunk redux-devtools-extension moment react-moment uuid
    ```
 
 3. Add Proxy to `frontend/package.json`:
@@ -328,7 +329,87 @@
       export default App;
       ```
 
-10. TODO:
+10. Create a `frontend/src/reducers/index.js` file to import and export all of your reducers from one place:
+
+    - Boilerplate code with example `Alert Reducer`:
+
+    ```jsx
+    // frontend/src/reducers/index.js
+
+    import { combineReducers } from 'redux';
+    import alert from './alertReducer';
+
+    export default combineReducers({
+      alert,
+    });
+    ```
+
+11. Create a `frontend/src/actions/types.js` file to store all of your CONSTANTS:
+
+    - With `Alert` examples:
+
+      ```jsx
+      // frontend/src/actions/types.js
+
+      export const SET_ALERT = 'SET_ALERT';
+      export const REMOVE_ALERT = 'REMOVE_ALERT';
+      ```
+
+12. Create your `action` file(s):
+
+    - Continued `alertAction` example:
+
+      ```jsx
+      // frontend/src/actions/alertAction.js
+
+      import uuid from 'uuid';
+      import { SET_ALERT, REMOVE_ALERT } from './types';
+
+      // We can do this because we are using the `Thunk` middleware
+      export const setAlert = (msg, alertType) => (dispatch) => {
+        const id = uuid.v4();
+        dispatch({
+          type: SET_ALERT,
+          payload: { msg, alertType, id },
+        });
+      };
+
+      export const removeAlert = (msg, alertType) => (dispatch) => {
+        const id = uuid.v4();
+        dispatch({
+          type: REMOVE_ALERT,
+          payload: { msg, alertType, id },
+        });
+      };
+      ```
+
+13. Create your `reducer` file(s):
+
+    - A reducer is a function that takes in a piece of state and an action. The action will be dispatched from an actions File.
+    - Continued `alert` example:
+
+      ```jsx
+      // frontend/src/reducers/alertReducer.js
+
+      import { SET_ALERT, REMOVE_ALERT } from '../actions/types';
+
+      const initialState = [];
+
+      function alertReducer(state = initialState, action) {
+        const { type, payload } = action;
+
+        switch (type) {
+          case SET_ALERT:
+            return [...state, payload];
+          case REMOVE_ALERT:
+            return state.filter((alert) => alert.id !== payload);
+          default:
+            return state;
+        }
+      }
+
+      export default alertReducer;
+      ```
 
 ```
 

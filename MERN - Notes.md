@@ -565,7 +565,7 @@ npm run server
 2. Add frontend dependencies:
    axios react-router-dom redux react-redux redux-thunk redux-devtools-extension moment react-moment
    ```bash
-   npm i axios react-router-dom redux react-redux redux-thunk redux-devtools-extension moment react-moment
+   npm i axios react-router-dom redux react-redux redux-thunk redux-devtools-extension moment react-moment uuid
    ```
 
 ```
