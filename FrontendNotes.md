@@ -165,7 +165,75 @@
       );
       ```
 
-7.  TODO:
+7.  Add The `UseState` Hook to your components
+
+    - Below is an example of a Register user form with the `UseState` Hook
+
+      ```jsx
+      import React, { useState } from 'react';
+
+      const Register = () => {
+        const [formData, setFormData] = useState({
+          name: '',
+          email: '',
+          password: '',
+          password2: '',
+        });
+
+        const { name, email, password, password2 } = formData;
+
+        const onChange = (e) =>
+          setFormData({ ...formData, [e.target.name]: e.target.value });
+
+        const onSubmit = (e) => {
+          e.preventDefault();
+          if (password !== password2) {
+            console.log('PASSWORDS DO NOT MATCH');
+          } else {
+            // register({ name, email, password });
+          }
+        };
+
+        return (
+          <section className="container">
+            ...
+            <form className="form" onSubmit={(e) => onSubmit(e)}>
+              <div className="form-group">
+                <input
+                  type="text"
+                  placeholder="Name"
+                  name="name"
+                  value={name}
+                  onChange={(e) => onChange(e)}
+                  required
+                />
+              </div>
+              <div className="form-group">
+                <input
+                  type="email"
+                  placeholder="Email Address"
+                  name="email"
+                  value={email}
+                  onChange={(e) => onChange(e)}
+                  required
+                />
+              </div>
+              ...
+              <input
+                type="submit"
+                className="btn btn-primary"
+                value="Register"
+              />
+            </form>
+            ...
+          </section>
+        );
+      };
+
+      export default Register;
+      ```
+
+8.  TODO:
 
 ```
 
