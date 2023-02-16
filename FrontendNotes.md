@@ -170,6 +170,8 @@
     - Below is an example of a Register user form with the `UseState` Hook
 
       ```jsx
+      // frontend/src/components/auth/Register.js
+
       import React, { useState } from 'react';
 
       const Register = () => {
@@ -233,7 +235,43 @@
       export default Register;
       ```
 
-8.  TODO:
+8.  Optional Example: If you wanted to build the app without `Redux`, then an example api request would look like:
+
+    ```jsx
+    // frontend/src/components/auth/Register.js
+
+    const onSubmit = async (e) => {
+      e.preventDefault();
+      if (password !== password2) {
+        console.log('PASSWORDS DO NOT MATCH');
+      } else {
+        const newUser = {
+          name,
+          email,
+          password,
+        };
+
+        try {
+          const config = {
+            headers: {
+              'Content-Type': 'Application/json',
+            },
+          };
+
+          const body = JSON.stringify(newUser);
+
+          const res = await axios.post('/api/users', body, config);
+
+          // res.data should be the token:
+          console.log(res.data);
+        } catch (err) {
+          console.error(err.response.data);
+        }
+      }
+    };
+    ```
+
+9.  TODO:
 
 ```
 
