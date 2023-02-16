@@ -239,6 +239,9 @@
 
     ```jsx
     // frontend/src/components/auth/Register.js
+    ...
+    import axios from 'axios';
+    ...
 
     const onSubmit = async (e) => {
       e.preventDefault();
