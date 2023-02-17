@@ -329,7 +329,38 @@
       export default App;
       ```
 
-10. Create a `frontend/src/reducers/index.js` file to import and export all of your reducers from one place:
+10. Create your component file(s) that will be used with redux:
+
+    - The following `Alert.js` component will be used throughout the rest of this example react/redux workflow:
+
+      ```jsx
+      // frontend/src/components/layout/Alert.js
+
+      import React from 'react';
+      import PropTypes from 'prop-types';
+      import { connect } from 'react-redux';
+
+      const Alert = ({ alerts }) =>
+        alerts !== null &&
+        alerts.length > 0 &&
+        alerts.map((alert) => (
+          <div key={alert.id} className={`alert alert-${alert.alertType}`}>
+            {alert.msg}
+          </div>
+        ));
+
+      Alert.propTypes = {
+        alerts: PropTypes.array.isRequired,
+      };
+
+      const mapStateToProps = (state) => ({
+        alerts: state.alert,
+      });
+
+      export default connect(mapStateToProps)(Alert);
+      ```
+
+11. Create a `frontend/src/reducers/index.js` file to import and export all of your reducers from one place:
 
     - Boilerplate code with example `Alert Reducer`:
 
@@ -344,7 +375,7 @@
     });
     ```
 
-11. Create a `frontend/src/actions/types.js` file to store all of your CONSTANTS:
+12. Create a type file at `frontend/src/actions/types.js` to store all of your CONSTANTS:
 
     - With `Alert` examples:
 
@@ -355,27 +386,34 @@
       export const REMOVE_ALERT = 'REMOVE_ALERT';
       ```
 
-12. Create your `action` file(s):
+13. Create your `action` file(s):
 
     - Continued `alertAction` example:
 
       ```jsx
       // frontend/src/actions/alertAction.js
 
-      import uuid from 'uuid';
+      import { v4 as uuidv4 } from 'uuid';
       import { SET_ALERT, REMOVE_ALERT } from './types';
 
       // We can do this because we are using the `Thunk` middleware
-      export const setAlert = (msg, alertType) => (dispatch) => {
-        const id = uuid.v4();
-        dispatch({
-          type: SET_ALERT,
-          payload: { msg, alertType, id },
-        });
-      };
+      export const setAlert =
+        (msg, alertType, timeout = 5000) =>
+        (dispatch) => {
+          const id = uuidv4();
+          dispatch({
+            type: SET_ALERT,
+            payload: { msg, alertType, id },
+          });
+
+          setTimeout(
+            () => dispatch({ type: REMOVE_ALERT, payload: id }),
+            timeout
+          );
+        };
 
       export const removeAlert = (msg, alertType) => (dispatch) => {
-        const id = uuid.v4();
+        const id = uuidv4();
         dispatch({
           type: REMOVE_ALERT,
           payload: { msg, alertType, id },
@@ -383,7 +421,7 @@
       };
       ```
 
-13. Create your `reducer` file(s):
+14. Create your `reducer` file(s):
 
     - A reducer is a function that takes in a piece of state and an action. The action will be dispatched from an actions File.
     - Continued `alert` example:
@@ -410,6 +448,95 @@
 
       export default alertReducer;
       ```
+
+15. To use your `Alert` component, import `connect` from `react-redux` into your `Register.js` component:
+
+    - Connects component to Redux:
+
+      ```jsx
+      // frontend/src/components/auth/Register.js
+
+      ...
+      // Connect component to Redux:
+      import { connect } from 'react-redux';
+      ...
+      const Register = ({ setAlert }) => {
+        ...
+        return (
+          <section className="container">
+            ...
+          </section>
+        );
+      };
+
+      // export default connect(<stateToPass>, objectOfActions = {<action1>, <action2>})(Register);
+      export default connect(null, { })(Register);
+      ```
+
+16. Import your Action(s) and `PropTypes` and export through `connect`
+
+    ```jsx
+    // frontend/src/components/auth/Register.js
+
+    ...
+    import { setAlert } from '../../actions/alertAction';
+    import PropTypes from 'prop-types';
+
+    ...
+    const Register = ({ setAlert }) => {
+      ...
+
+      const onSubmit = (e) => {
+        e.preventDefault();
+        if (password !== password2) {
+          setAlert('Passwords do not match', 'danger'); // Calls to actions
+        } else {
+          console.log('SUCCESS');
+        }
+      };
+
+      return (
+        <section className="container">
+          ...
+        </section>
+      );
+    };
+
+    Register.propTypes = {
+      setAlert: PropTypes.func.isRequired,
+    };
+
+    // export default connect(<stateToPass>, objectOfActions = {<action1>, <action2>})(Register);
+    export default connect(null, { setAlert })(Register);
+    ```
+
+17. Import and add the new component(s) to your `App.js` file:
+
+    ```jsx
+    // frontend/src/App.js
+    ...
+    import Alert from './components/layout/Alert';
+    ...
+
+    const App = () => (
+      <Provider store={store}>
+        <Router>
+          <Navbar />
+          <Alert />
+          <Routes>
+            <Route exact path="/" element={<Landing />} />
+            <Route exact path="/register" element={<Register />} />
+            <Route exact path="/login" element={<Login />} />
+          </Routes>
+        </Router>
+      </Provider>
+    );
+
+    export default App;
+    ```
+
+18. TODO:
+19. TODO:
 
 ```
 
