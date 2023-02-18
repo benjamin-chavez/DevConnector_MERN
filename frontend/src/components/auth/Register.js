@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 // Connect component to Redux:
 import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { Link, Navigate } from 'react-router-dom';
 import { setAlert } from '../../actions/alertActions';
 import { registerUser } from '../../actions/authActions';
 import PropTypes from 'prop-types';
 
-const Register = ({ setAlert, registerUser }) => {
+// the params passed here are the props: setAlert, registerUser, isAuthenticated
+const Register = ({ setAlert, registerUser, isAuthenticated }) => {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -32,6 +33,10 @@ const Register = ({ setAlert, registerUser }) => {
       registerUser({ name, email, password });
     }
   };
+
+  if (isAuthenticated) {
+    return <Navigate to="/dashboard" />;
+  }
 
   return (
     <section className="container">
@@ -98,8 +103,13 @@ const Register = ({ setAlert, registerUser }) => {
 Register.propTypes = {
   setAlert: PropTypes.func.isRequired,
   registerUser: PropTypes.func.isRequired,
+  isAuthenticated: PropTypes.bool,
 };
+
+const mapStateToProps = (state) => ({
+  isAuthenticated: state.auth.isAuthenticated,
+});
 
 // export default Register;
 // export default connect(<stateToPass>, objectOfActions = {<action1>, <action2>})(Register);
-export default connect(null, { setAlert, registerUser })(Register);
+export default connect(mapStateToProps, { setAlert, registerUser })(Register);
