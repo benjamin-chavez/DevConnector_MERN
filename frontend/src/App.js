@@ -19,10 +19,8 @@ const App = () => (
       <Alert />
       <Routes>
         <Route exact path="/" element={<Landing />} />
-        {/* <Switch> */}
         <Route exact path="/register" element={<Register />} />
         <Route exact path="/login" element={<Login />} />
-        {/* </Switch> */}
       </Routes>
     </Router>
   </Provider>

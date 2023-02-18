@@ -388,10 +388,10 @@
 
 13. Create your `action` file(s):
 
-    - Continued `alertAction` example:
+    - Continued `alertActions` example:
 
       ```jsx
-      // frontend/src/actions/alertAction.js
+      // frontend/src/actions/alertActions.js
 
       import { v4 as uuidv4 } from 'uuid';
       import { SET_ALERT, REMOVE_ALERT } from './types';
@@ -479,7 +479,7 @@
     // frontend/src/components/auth/Register.js
 
     ...
-    import { setAlert } from '../../actions/alertAction';
+    import { setAlert } from '../../actions/alertActions';
     import PropTypes from 'prop-types';
 
     ...
@@ -535,9 +535,15 @@
     export default App;
     ```
 
-18. TODO:
+18. TODO
+
 19. TODO:
+20.
 
-```
+######
 
-```
+Add constants
+Add Reducers
+Add Reducer to store
+Add Actions
+Add functionality to the screen so user can perform the new action

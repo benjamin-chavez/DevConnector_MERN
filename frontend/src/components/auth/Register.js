@@ -2,10 +2,11 @@ import React, { useState } from 'react';
 // Connect component to Redux:
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { setAlert } from '../../actions/alertAction';
+import { setAlert } from '../../actions/alertActions';
+import { registerUser } from '../../actions/authActions';
 import PropTypes from 'prop-types';
 
-const Register = ({ setAlert }) => {
+const Register = ({ setAlert, registerUser }) => {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -26,9 +27,9 @@ const Register = ({ setAlert }) => {
       // props.setAlert('Passwords do not match', 'danger'); // Calls to actions
       setAlert('Passwords do not match', 'danger'); // Calls to actions
     } else {
-      console.log('SUCCESS');
-      // register({ name, email, password });
       // console.log(name, email, password);
+      // console.log('SUCCESS');
+      registerUser({ name, email, password });
     }
   };
 
@@ -46,7 +47,7 @@ const Register = ({ setAlert }) => {
             name="name"
             value={name}
             onChange={(e) => onChange(e)}
-            required
+            // required
           />
         </div>
         <div className="form-group">
@@ -56,7 +57,7 @@ const Register = ({ setAlert }) => {
             name="email"
             value={email}
             onChange={(e) => onChange(e)}
-            required
+            // required
           />
           <small className="form-text">
             This site uses Gravatar so if you want a profile image, use a
@@ -68,10 +69,10 @@ const Register = ({ setAlert }) => {
             type="password"
             placeholder="Password"
             name="password"
-            minLength="6"
+            // minLength="6"
             value={password}
             onChange={(e) => onChange(e)}
-            required
+            // required
           />
         </div>
         <div className="form-group">
@@ -79,10 +80,10 @@ const Register = ({ setAlert }) => {
             type="password"
             placeholder="Confirm Password"
             name="password2"
-            minLength="6"
+            // minLength="6"
             value={password2}
             onChange={(e) => onChange(e)}
-            required
+            // required
           />
         </div>
         <input type="submit" className="btn btn-primary" value="Register" />
@@ -96,8 +97,9 @@ const Register = ({ setAlert }) => {
 
 Register.propTypes = {
   setAlert: PropTypes.func.isRequired,
+  registerUser: PropTypes.func.isRequired,
 };
 
 // export default Register;
 // export default connect(<stateToPass>, objectOfActions = {<action1>, <action2>})(Register);
-export default connect(null, { setAlert })(Register);
+export default connect(null, { setAlert, registerUser })(Register);
