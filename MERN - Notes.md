@@ -587,6 +587,8 @@ npm run server
 
 ```
 
+TODO: 2/17/23. When you have time to review react hooks again, look at https://reactjs.org/docs/hooks-effect.html and ctrl-f "If you use this optimization, make sure the array includes all values from the component scope (such as props and state) that change over time and that are used by the effect. Otherwise, your code will reference stale values from previous renders. Lear". Read that section.
+
 ```
 
 
@@ -728,3 +730,4 @@ BUGS:
 3. Add Reducer to store
 4. Add Actions
 5. Add functionality to the screen so user can perform the new action
+6.
