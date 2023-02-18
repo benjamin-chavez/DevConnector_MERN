@@ -64,7 +64,7 @@ const Login = ({ loginUser, isAuthenticated }) => {
   );
 };
 
-Login.prototypes = {
+Login.propTypes = {
   loginUser: PropTypes.func.isRequired,
   isAuthenticated: PropTypes.bool,
 };
