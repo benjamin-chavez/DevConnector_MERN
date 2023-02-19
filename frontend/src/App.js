@@ -17,14 +17,17 @@ import setAuthToken from './utils/setAuthToken';
 
 import './App.css';
 
-// Check local Storage
-if (localStorage.token) {
-  setAuthToken(localStorage.token);
-}
-
 const App = () => {
   // Note: Adding the second paramater of `[]` to useEffect here stops it from running on a continuos loop, which it otherwise would do.
   useEffect(() => {
+    // When app first runs, check localStorage for a token
+    if (localStorage.token) {
+      // if there is a token set axios headers for all request
+      setAuthToken(localStorage.token);
+    }
+
+    // try to fetch a user, if no token or invalid token we
+    // will get a 401 response from our API
     store.dispatch(loadUser());
   }, []);
 
@@ -37,10 +40,11 @@ const App = () => {
           <Route exact path="/" element={<Landing />} />
           <Route exact path="/register" element={<Register />} />
           <Route exact path="/login" element={<Login />} />
-          <Route
+          <Route exact path="/dashboard" element={<Dashboard />} />
+          {/* <Route
             path="/dashboard"
             element={<PrivateRoute component={Dashboard} />}
-          />
+          /> */}
         </Routes>
       </Router>
     </Provider>

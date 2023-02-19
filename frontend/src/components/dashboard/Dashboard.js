@@ -1,10 +1,16 @@
-import React from 'react';
-
-// import { connect } from 'react-redux';
-
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 
-const Dashboard = (props) => {
+import { getCurrentProfile } from '../../actions/profileActions';
+
+const Dashboard = ({ getCurrentProfile, auth, profile }) => {
+  useEffect(() => {
+    getCurrentProfile();
+    // }, [getCurrentProfile]);
+  }, []); //FIXME: Review this line
+  // });
+
   return (
     <section className="container">
       <div>Dashboard</div>
@@ -12,6 +18,15 @@ const Dashboard = (props) => {
   );
 };
 
-Dashboard.propTypes = {};
+Dashboard.propTypes = {
+  auth: PropTypes.object.isRequired,
+  getCurrentProfile: PropTypes.func.isRequired,
+  profile: PropTypes.object.isRequired,
+};
 
-export default Dashboard;
+const mapStateToProps = (state) => ({
+  auth: state.auth,
+  profile: state.profile,
+});
+
+export default connect(mapStateToProps, { getCurrentProfile })(Dashboard);
