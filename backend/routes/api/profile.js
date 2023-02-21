@@ -9,6 +9,9 @@ const { check, validationResult } = require('express-validator');
 const Profile = require('../../models/Profile');
 // Bring in the User Model:
 const User = require('../../models/User');
+// Bring in Post Model:
+// FIXME: FIXME: FIXME: UNCOMMENT AFTER YOU ADD THE POST MODEL!!
+// const Post = require('../../models/Post');
 
 // @route   GET api/profile/me
 // @desc    Get current user's profile route
@@ -158,9 +161,10 @@ router.get('/user/:user_id', async (req, res) => {
 // @access  Private
 router.delete('/', auth, async (req, res) => {
   try {
-    // TODO: - Delete user's posts
+    // Delete User Posts
+    await Post.deleteMany({ user: req.user.id });
 
-    // Delete Profile
+    // Delete User Profile
     await Profile.findOneAndRemove({ user: req.user_id });
 
     // Delete User
@@ -238,7 +242,7 @@ router.put(
   }
 );
 
-// @route   DELETE api/profile/experience (could technically be a PUT instead)
+// @route   DELETE api/profile/experience/:experience_id (could technically be a PUT instead)
 // @desc    Delete Experience from Profile
 // @access  Private
 router.delete('/experience/:experience_id', auth, async (req, res) => {
