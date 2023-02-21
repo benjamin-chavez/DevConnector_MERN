@@ -7,6 +7,7 @@ import ProfileTop from '../profile/ProfileTop';
 import ProfileAbout from '../profile/ProfileAbout';
 import ProfileExperience from '../profile/ProfileExperience';
 import ProfileEducation from '../profile/ProfileEducation';
+import ProfileGithub from '../profile/ProfileGithub';
 import { getProfileById } from '../../actions/profileActions';
 
 const Profile = ({
@@ -36,7 +37,7 @@ const Profile = ({
                 Edit Profile
               </Link>
             )}
-          <div class="profile-grid my-1">
+          <div className="profile-grid my-1">
             <ProfileTop profile={profile} />
             <ProfileAbout profile={profile} />
             <div className="profile-exp bg-white p-2">
@@ -63,6 +64,9 @@ const Profile = ({
                 <h4>No Education Credentials</h4>
               )}
             </div>
+            {profile.githubusername && (
+              <ProfileGithub username={profile.githubusername} />
+            )}
           </div>
         </Fragment>
       )}
