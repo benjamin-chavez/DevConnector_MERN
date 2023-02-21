@@ -54,7 +54,7 @@ const EditProfile = ({
       youtube: loading || !profile.social ? '' : profile.social.youtube,
       instagram: loading || !profile.social ? '' : profile.social.instagram,
     });
-  }, [loading]);
+  }, [loading, getCurrentProfile]);
 
   // const navigate = useNavigate();
 
@@ -64,8 +64,8 @@ const EditProfile = ({
     website,
     location,
     status,
-    skills,
     githubusername,
+    skills,
     bio,
     twitter,
     facebook,

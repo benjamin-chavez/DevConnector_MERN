@@ -51,7 +51,9 @@ export const getProfiles = () => async (dispatch) => {
 };
 
 // Get Profile by ID
-export const getProfileByID = (userId) => async (dispatch) => {
+export const getProfileById = (userId) => async (dispatch) => {
+  dispatch({ type: CLEAR_PROFILE });
+
   try {
     const res = await api.get(`/profile/user/${userId}`);
 
@@ -62,8 +64,7 @@ export const getProfileByID = (userId) => async (dispatch) => {
   } catch (err) {
     dispatch({
       type: PROFILE_ERROR,
-      // payload: { msg: err.response.statusText, status: err.response.status },
-      payload: { msg: err.response.data.msg, status: err.response.status },
+      // payload: { msg: err.response.data.msg, status: err.response.status },
     });
   }
 };
@@ -212,7 +213,6 @@ export const deleteAccount = () => async (dispatch) => {
     )
   ) {
     try {
-      // const res = await api.delete('/profile');
       await api.delete('/profile');
 
       dispatch({ type: CLEAR_PROFILE });
