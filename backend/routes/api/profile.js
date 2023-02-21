@@ -162,7 +162,8 @@ router.get('/user/:user_id', async (req, res) => {
 router.delete('/', auth, async (req, res) => {
   try {
     // Delete User Posts
-    await Post.deleteMany({ user: req.user.id });
+    // FIXME: FIXME: FIXME: UNCOMMENT AFTER YOU ADD THE POST MODEL!!
+    // await Post.deleteMany({ user: req.user.id });
 
     // Delete User Profile
     await Profile.findOneAndRemove({ user: req.user_id });

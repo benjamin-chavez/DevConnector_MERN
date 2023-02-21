@@ -4,6 +4,8 @@ import { setAlert } from './alertActions';
 
 import {
   GET_PROFILE,
+  GET_PROFILES,
+  GET_GITHUB_REPOS,
   PROFILE_ERROR,
   UPDATE_PROFILE,
   CLEAR_PROFILE,
@@ -17,6 +19,62 @@ export const getCurrentProfile = () => async (dispatch) => {
 
     dispatch({
       type: GET_PROFILE,
+      payload: res.data,
+    });
+  } catch (err) {
+    dispatch({
+      type: PROFILE_ERROR,
+      // payload: { msg: err.response.statusText, status: err.response.status },
+      payload: { msg: err.response.data.msg, status: err.response.status },
+    });
+  }
+};
+
+// Get all Profiles
+export const getProfiles = () => async (dispatch) => {
+  dispatch({ type: CLEAR_PROFILE });
+
+  try {
+    const res = await api.get('profile/');
+
+    dispatch({
+      type: GET_PROFILES,
+      payload: res.data,
+    });
+  } catch (err) {
+    dispatch({
+      type: PROFILE_ERROR,
+      // payload: { msg: err.response.statusText, status: err.response.status },
+      payload: { msg: err.response.data.msg, status: err.response.status },
+    });
+  }
+};
+
+// Get Profile by ID
+export const getProfileByID = (userId) => async (dispatch) => {
+  try {
+    const res = await api.get(`profile/user/${userId}`);
+
+    dispatch({
+      type: GET_PROFILE,
+      payload: res.data,
+    });
+  } catch (err) {
+    dispatch({
+      type: PROFILE_ERROR,
+      // payload: { msg: err.response.statusText, status: err.response.status },
+      payload: { msg: err.response.data.msg, status: err.response.status },
+    });
+  }
+};
+
+// Get Github Repos
+export const getGithubRepos = (username) => async (dispatch) => {
+  try {
+    const res = await api.get(`profile/github/${username}`);
+
+    dispatch({
+      type: GET_GITHUB_REPOS,
       payload: res.data,
     });
   } catch (err) {
@@ -65,7 +123,6 @@ export const createProfile =
   };
 
 // Add Experience
-// FIXME: CUR
 export const addExperience = (formData) => async (dispatch) => {
   try {
     const res = await api.put('/profile/experience', formData);
@@ -87,7 +144,6 @@ export const addExperience = (formData) => async (dispatch) => {
 };
 
 // Add Education
-// FIXME: CUR
 export const addEducation = (formData) => async (dispatch) => {
   try {
     const res = await api.put('/profile/education', formData);
@@ -156,8 +212,8 @@ export const deleteAccount = () => async (dispatch) => {
     )
   ) {
     try {
-      const res = await api.delete('/profile');
-      // await api.delete('/profile');
+      // const res = await api.delete('/profile');
+      await api.delete('/profile');
 
       dispatch({ type: CLEAR_PROFILE });
       dispatch({ type: ACCOUNT_DELETED });
