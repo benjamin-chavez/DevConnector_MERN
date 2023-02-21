@@ -30,6 +30,7 @@ function profileReducer(state = initialState, action) {
       return {
         ...state,
         profiles: payload,
+        // AWAIT HERE???
         loading: false,
       };
     case GET_GITHUB_REPOS:
