@@ -18,8 +18,8 @@ const Posts = ({ getPosts, post: { posts } }) => {
       </p>
       {/* <PostForm /> */}
       <div className="posts">
-        {posts.map((post) => (
-          <PostItem key={post._id} post={post} />
+        {posts.map((p) => (
+          <PostItem key={p._id} post={p} />
         ))}
       </div>
     </section>
@@ -28,7 +28,8 @@ const Posts = ({ getPosts, post: { posts } }) => {
 
 Posts.propTypes = {
   getPosts: PropTypes.func.isRequired,
-  post: PropTypes.object, //.isRequired,
+  // post: PropTypes.object, //.isRequired,
+  post: PropTypes.object.isRequired,
 };
 
 const mapStateToProps = (state) => ({

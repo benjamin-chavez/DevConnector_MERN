@@ -106,16 +106,13 @@ router.delete('/:id', [auth, checkObjectId('id')], async (req, res) => {
 // @route   PUT api/posts/like/:id
 // @desc    Like a post
 // @access  Private
-router.put('/like/:id', auth, async (req, res) => {
+router.put('/like/:id', auth, checkObjectId('id'), async (req, res) => {
   try {
     const post = await Post.findById(req.params.id);
 
     // TODO: I FEEL LIKE THIS WOULD BE BETTER AS A TOGGLE
     // Check if the post has already been liked by this user
-    if (
-      post.likes.filter((like) => like.user.toString() === req.user.id).length >
-      0
-    ) {
+    if (post.likes.some((like) => like.user.toString() === req.user.id)) {
       return res.status(400).json({ msg: "You've already liked this post" });
     }
 
@@ -133,24 +130,18 @@ router.put('/like/:id', auth, async (req, res) => {
 // @route   PUT api/posts/like/:id
 // @desc    Like a post
 // @access  Private
-router.put('/unlike/:id', auth, async (req, res) => {
+router.put('/unlike/:id', auth, checkObjectId('id'), async (req, res) => {
   try {
     const post = await Post.findById(req.params.id);
 
     // Check if the post has already been liked by this user
-    if (
-      post.likes.filter((like) => like.user.toString() === req.user.id)
-        .length === 0
-    ) {
+    if (!post.likes.some((like) => like.user.toString() === req.user.id)) {
       return res.status(400).json({ msg: 'Post has not yet been liked' });
     }
 
-    // Get remove index
-    const removeIndex = post.likes
-      .map((like) => like.user.toString())
-      .indexOf(req.user.id);
-
-    post.likes.splice(removeIndex, 1);
+    post.likes = post.likes.filter(
+      ({ user }) => user.toString() !== req.user.id
+    );
 
     await post.save();
 
