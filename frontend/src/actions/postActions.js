@@ -8,6 +8,8 @@ import {
   UPDATE_LIKES,
   ADD_POST,
   DELETE_POST,
+  ADD_COMMENT,
+  DELETE_COMMENT,
 } from './types';
 
 // Get Posts
@@ -78,7 +80,7 @@ export const removeLike = (id) => async (dispatch) => {
   }
 };
 
-// Delete Post
+// Add Post
 export const addPost = (formData) => async (dispatch) => {
   // Added config because we are sending formData
   const config = {
@@ -116,6 +118,52 @@ export const deletePost = (id) => async (dispatch) => {
     });
 
     dispatch(setAlert('Post Removed', 'success'));
+  } catch (err) {
+    dispatch({
+      type: POST_ERROR,
+      payload: { msg: err.response.data.msg, status: err.response.status },
+    });
+  }
+};
+
+// Add Comment
+export const addComment = (postId, formData) => async (dispatch) => {
+  // TODO: Check if you actually do need the config
+  // Added config because we are sending formData
+  const config = {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  };
+
+  try {
+    const res = await api.post(`/posts/comment/${postId}`, formData, config);
+
+    dispatch({
+      type: ADD_COMMENT,
+      payload: res.data,
+    });
+
+    dispatch(setAlert('Comment Added', 'success'));
+  } catch (err) {
+    dispatch({
+      type: POST_ERROR,
+      payload: { msg: err.response.data.msg, status: err.response.status },
+    });
+  }
+};
+
+// Delete Comment
+export const deleteComment = (postId, commentId) => async (dispatch) => {
+  try {
+    await api.delete(`/posts/comment/${postId}/${commentId}`);
+
+    dispatch({
+      type: DELETE_COMMENT,
+      payload: commentId,
+    });
+
+    dispatch(setAlert('Post Deleted', 'success'));
   } catch (err) {
     dispatch({
       type: POST_ERROR,
