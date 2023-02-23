@@ -15,6 +15,7 @@ import Profiles from './components/profiles/Profiles';
 import Profile from './components/profile/Profile';
 import Posts from './components/posts/Posts';
 import Post from './components/post/Post';
+import NotFound from './components/layout/NotFound';
 import PrivateRoute from './components/routing/PrivateRoute';
 import { LOGOUT } from './actions/types';
 
@@ -51,9 +52,9 @@ const App = () => {
         <Navbar />
         <Alert />
         <Routes>
-          <Route exact path="/" element={<Landing />} />
-          <Route exact path="/register" element={<Register />} />
-          <Route exact path="/login" element={<Login />} />
+          <Route path="/" element={<Landing />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/login" element={<Login />} />
           <Route path="/profiles" element={<Profiles />} />
           <Route path="profile/:id" element={<Profile />} />
           <Route
@@ -78,6 +79,7 @@ const App = () => {
           />
           <Route path="posts" element={<PrivateRoute component={Posts} />} />
           <Route path="posts/:id" element={<PrivateRoute component={Post} />} />
+          <Route path="/*" element={<NotFound />} />
         </Routes>
       </Router>
     </Provider>
